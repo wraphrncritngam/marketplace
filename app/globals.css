@@ -1,14 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* ตั้งค่า Default Background และ Text Color รองรับ Dark Mode */
 @layer base {
   body {
     @apply bg-white text-slate-900 transition-colors duration-300;
   }
-  
-  .dark body {
-    @apply bg-slate-900 text-slate-100;
-  }
+}
+
+.dark body {
+  @apply bg-slate-900 text-slate-100;
 }
