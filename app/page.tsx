@@ -1,30 +1,72 @@
 'use client';
 
-import { useEffect } from 'react';
+import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 
-export default function SplashScreen() {
+export default function AddProductPage() {
   const router = useRouter();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/home');
-    }, 2500); // แสดง Splash Screen 2.5 วินาทีแล้วไปหน้า /home
-
-    return () => clearTimeout(timer);
-  }, [router]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert('โพสต์ประกาศขายสินค้าเรียบร้อย!');
+    router.push('/home');
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-4 text-center">
-      <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl font-extrabold shadow-lg shadow-blue-500/30 animate-bounce mb-6">
-        CM
-      </div>
-      <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-2">
-        Campus Marketplace
-      </h1>
-      <p className="text-slate-400 text-sm max-w-xs">
-        แหล่งรวมสินค้าสำหรับนักศึกษา ซื้อง่าย ขายสะดวก ในรั้วมหาลัย
-      </p>
+    <div>
+      <Navbar />
+      <main className="p-4 max-w-md mx-auto">
+        <h1 className="text-xl font-bold mb-4">ลงประกาศขายสินค้า</h1>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold mb-1">ชื่อสินค้า</label>
+            <input 
+              type="text" 
+              required 
+              placeholder="เช่น หนังสือเรียน, iPad" 
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1">ราคา (บาท)</label>
+            <input 
+              type="number" 
+              required 
+              placeholder="0.00" 
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1">หมวดหมู่</label>
+            <select className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>หนังสือ</option>
+              <option>ไอที</option>
+              <option>เสื้อผ้า</option>
+              <option>เครื่องใช้ไฟฟ้า</option>
+              <option>อื่นๆ</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1">รายละเอียดสินค้า</label>
+            <textarea 
+              rows={3} 
+              placeholder="ระบุสภาพสินค้า สถานที่นัดรับ หรือช่องทางติดต่อ..." 
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition text-sm"
+          >
+            ลงประกาศขาย
+          </button>
+        </form>
+      </main>
     </div>
   );
 }

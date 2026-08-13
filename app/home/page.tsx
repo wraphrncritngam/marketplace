@@ -1,30 +1,61 @@
-'use client';
+import Navbar from '@/components/Navbar';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  category: string;
+  seller: string;
+  image: string;
+}
 
-export default function SplashScreen() {
-  const router = useRouter();
+const mockProducts: Product[] = [
+  { id: 1, title: 'หนังสือเรียน Calculus II สภาพดี', price: 180, category: 'หนังสือ', seller: 'พี่ปอนด์ ปี 3', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400' },
+  { id: 2, title: 'เมาส์ไร้สาย Logitech Silent', price: 350, category: 'ไอที', seller: 'กิ๊ฟ วิศวะ', image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400' },
+  { id: 3, title: 'เสื้อกาวน์หมอ/เภสัช Size M', price: 200, category: 'เสื้อผ้า', seller: 'ฟ้า สดใส', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400' },
+  { id: 4, title: 'พัดลมตั้งโต๊ะ USB ตัวเล็ก', price: 120, category: 'เครื่องใช้ไฟฟ้า', seller: 'ไมค์ หอ 8', image: 'https://images.unsplash.com/photo-1618941723615-3303d8d6f51c?w=400' },
+  { id: 5, title: 'iPad Gen 9 64GB Wi-Fi สภาพ 95%', price: 7900, category: 'ไอที', seller: 'แอน บริหาร', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400' },
+];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/home');
-    }, 2500); // แสดง Splash Screen 2.5 วินาทีแล้วไปหน้า /home
-
-    return () => clearTimeout(timer);
-  }, [router]);
-
+export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-4 text-center">
-      <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl font-extrabold shadow-lg shadow-blue-500/30 animate-bounce mb-6">
-        CM
-      </div>
-      <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-2">
-        Campus Marketplace
-      </h1>
-      <p className="text-slate-400 text-sm max-w-xs">
-        แหล่งรวมสินค้าสำหรับนักศึกษา ซื้อง่าย ขายสะดวก ในรั้วมหาลัย
-      </p>
+    <div className="pb-12">
+      <Navbar />
+
+      <main className="p-4 max-w-md mx-auto">
+        <header className="my-4">
+          <h1 className="text-xl font-bold">สินค้ามาใหม่ 🔥</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">รายการประกาศขายล่าสุดจากเพื่อนในมหาลัย</p>
+        </header>
+
+        {/* Product Cards Grid */}
+        <div className="grid grid-cols-1 gap-4">
+          {mockProducts.map((product) => (
+            <div 
+              key={product.id} 
+              className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm flex"
+            >
+              <img 
+                src={product.image} 
+                alt={product.title} 
+                className="w-28 h-28 object-cover flex-shrink-0"
+              />
+              <div className="p-3 flex flex-col justify-between flex-grow">
+                <div>
+                  <span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                    {product.category}
+                  </span>
+                  <h2 className="text-sm font-semibold mt-1 line-clamp-1">{product.title}</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">ผู้ขาย: {product.seller}</p>
+                </div>
+                <div className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                  ฿{product.price.toLocaleString()}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
