@@ -1,13 +1,14 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: 'class', // <-- เพิ่มบรรทัดนี้
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ตั้งค่า Default Background และ Text Color รองรับ Dark Mode */
+@layer base {
+  body {
+    @apply bg-white text-slate-900 transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-slate-900 text-slate-100;
+  }
 }
