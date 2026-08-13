@@ -16,7 +16,8 @@ const mockProducts: Product[] = [
   { id: 1, title: 'หนังสือเรียน Calculus II สภาพดี', price: 180, category: 'หนังสือ', seller: 'พี่ปอนด์ ปี 3', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400' },
   { id: 2, title: 'เมาส์ไร้สาย Logitech Silent', price: 350, category: 'ไอที', seller: 'กิ๊ฟ วิศวะ', image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400' },
   { id: 3, title: 'เสื้อกาวน์หมอ/เภสัช Size M', price: 200, category: 'เสื้อผ้า', seller: 'ฟ้า สดใส', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400' },
-  { id: 4, title: 'พัดลมตั้งโต๊ะ USB ตัวเล็ก', price: 120, category: 'เครื่องใช้ไฟฟ้า', seller: 'ไมค์ หอ 8', image: 'https://images.unsplash.com/photo-1618941723615-3303d8d6f51c?w=400' },
+  // 🟢 แก้ไข URL รูปพัดลมเป็นรูปใหม่ที่ใช้งานได้แน่ๆ
+  { id: 4, title: 'พัดลมตั้งโต๊ะ USB ตัวเล็ก', price: 120, category: 'เครื่องใช้ไฟฟ้า', seller: 'ไมค์ หอ 8', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400' },
   { id: 5, title: 'iPad Gen 9 64GB Wi-Fi สภาพ 95%', price: 7900, category: 'ไอที', seller: 'แอน บริหาร', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400' },
 ];
 
@@ -92,6 +93,10 @@ export default function HomePage() {
                 src={product.image}
                 alt={product.title}
                 className="w-28 h-28 object-cover flex-shrink-0"
+                onError={(e) => {
+                  // 🟢 ถ้าลิงก์รูปมีปัญหา จะเปลี่ยนเป็นรูป Placeholder สำรองอัตโนมัติ
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=400';
+                }}
               />
               <div className="p-3 flex flex-col justify-between flex-grow">
                 <div>
