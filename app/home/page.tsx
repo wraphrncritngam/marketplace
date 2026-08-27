@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Float } from '@react-three/drei';
 
-// คอมโพเนนต์แสดงผลโมเดล 3D (จำลองเป็นกล่องพัสดุ/สินค้า 3 มิติ)
 function Product3DModel() {
   return (
     <Float speed={2} rotationIntensity={1.5} floatIntensity={0.8}>
@@ -79,11 +78,11 @@ export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4">
       {/* Banner */}
-      <div className="flex justify-between items-center bg-blue-50 dark:bg-slate-900 p-4 md:p-6 rounded-2xl border-none shadow-sm">
+      <div className="flex justify-between items-center bg-blue-50 dark:bg-slate-900 p-4 md:p-5 rounded-2xl border-none shadow-sm">
         <div className="pr-2">
-          <h2 className="font-bold text-base md:text-xl text-blue-900 dark:text-blue-400">
+          <h2 className="font-bold text-base md:text-lg text-blue-900 dark:text-blue-400">
             มีของไม่ได้ใช้ไหม?
           </h2>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
@@ -92,7 +91,7 @@ export default function HomePage() {
         </div>
         <Link
           href="/product"
-          className="px-4 py-2.5 md:px-6 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition whitespace-nowrap"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition whitespace-nowrap"
         >
           + ลงขายสินค้า
         </Link>
@@ -103,32 +102,30 @@ export default function HomePage() {
         <span className="text-xs md:text-sm text-slate-500">{sampleProducts.length} รายการ</span>
       </div>
 
-      {/* Product List Grid (รองรับ responsive: มือถือ 2 คอลัมน์ / จอคอม 4-5 คอลัมน์) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+      {/* Product List Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
         {sampleProducts.map((item) => (
           <div
             key={item.id}
             onClick={() => setSelectedProduct(item)}
-            className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 md:p-3 shadow-sm hover:border-blue-500 hover:shadow-md transition"
+            className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 shadow-sm hover:border-blue-500 hover:shadow-md transition"
           >
             <div className="relative w-full h-32 md:h-40 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
               <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
               {item.isHot && (
-                <span className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded">
+                <span className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
                   HOT
                 </span>
               )}
             </div>
 
             <div className="mt-2 space-y-1">
-              <span className="text-[10px] md:text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">
+              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">
                 {item.category}
               </span>
               <h4 className="text-xs md:text-sm font-bold line-clamp-1">{item.title}</h4>
-              <p className="text-sm md:text-base font-black text-blue-600 dark:text-cyan-400">
-                ฿{item.price}
-              </p>
-              <div className="text-[10px] md:text-xs text-slate-400 flex justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+              <p className="text-sm md:text-base font-black text-blue-600 dark:text-cyan-400">฿{item.price}</p>
+              <div className="text-[10px] text-slate-400 flex justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
                 <span>{item.seller}</span>
                 <span>{item.location}</span>
               </div>
@@ -137,12 +134,10 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Pop-up รายละเอียดสินค้า + โมเดล 3D */}
+      {/* Pop-up 3D */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-sm md:max-w-2xl bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-            
-            {/* ปุ่มปิด */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm md:max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedProduct(null)}
               className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center font-bold hover:bg-slate-200 transition"
@@ -150,58 +145,49 @@ export default function HomePage() {
               ✕
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-2">
-              {/* ฝั่งซ้าย: แสดงผล โมเดล 3D แบบหมุนได้ */}
-              <div className="relative w-full h-48 md:h-full min-h-[200px] rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900 to-indigo-950 border border-slate-800">
-                <span className="absolute top-2 left-3 z-10 text-[10px] bg-blue-500/80 text-white px-2 py-0.5 rounded-full backdrop-blur">
-                  ✨ 3D Interactive (หมุนดูได้)
-                </span>
-                <Canvas camera={{ position: [0, 0, 3.5] }}>
-                  <ambientLight intensity={0.8} />
-                  <directionalLight position={[5, 5, 5]} intensity={1.5} />
-                  <Product3DModel />
-                  <OrbitControls enableZoom={false} />
-                </Canvas>
+            <div className="relative w-full h-44 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900 to-indigo-950 border border-slate-800">
+              <span className="absolute top-2 left-3 z-10 text-[10px] bg-blue-500/80 text-white px-2 py-0.5 rounded-full backdrop-blur">
+                ✨ 3D Interactive (ลากเพื่อหมุนดูได้)
+              </span>
+              <Canvas camera={{ position: [0, 0, 3.5] }}>
+                <ambientLight intensity={0.8} />
+                <directionalLight position={[5, 5, 5]} intensity={1.5} />
+                <Product3DModel />
+                <OrbitControls enableZoom={false} />
+              </Canvas>
+            </div>
+
+            <div>
+              <span className="text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full font-semibold">
+                {selectedProduct.category}
+              </span>
+              <h2 className="text-lg font-extrabold mt-2">{selectedProduct.title}</h2>
+              <p className="text-xl font-black text-blue-600 dark:text-cyan-400 mt-1">
+                ฿{selectedProduct.price}
+              </p>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-[#1e293b] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+              {selectedProduct.description}
+            </div>
+
+            <div className="bg-slate-50 dark:bg-[#1e293b] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-slate-400">ผู้ขาย</p>
+                <p className="font-bold">{selectedProduct.seller}</p>
               </div>
-
-              {/* ฝั่งขวา: รายละเอียดสินค้า */}
-              <div className="space-y-4 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-[10px] md:text-xs bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full font-semibold">
-                      {selectedProduct.category}
-                    </span>
-                    <h2 className="text-lg md:text-xl font-extrabold mt-2">{selectedProduct.title}</h2>
-                    <p className="text-2xl font-black text-blue-600 dark:text-cyan-400 mt-1">
-                      ฿{selectedProduct.price}
-                    </p>
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-[#1e293b] p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                    {selectedProduct.description}
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-[#1e293b] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs flex justify-between items-center">
-                    <div>
-                      <p className="text-[10px] text-slate-400">ผู้ขาย</p>
-                      <p className="font-bold">{selectedProduct.seller}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-slate-400">นัดรับที่</p>
-                      <p className="font-bold text-blue-600 dark:text-blue-400">{selectedProduct.location}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => alert(`ส่งข้อความหาผู้ขาย (${selectedProduct.seller}) เรียบร้อยแล้ว`)}
-                  className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-500/30 hover:opacity-95 transition mt-4"
-                >
-                  💬 ทักแชทนัดรับสินค้า
-                </button>
+              <div className="text-right">
+                <p className="text-[10px] text-slate-400">นัดรับที่</p>
+                <p className="font-bold text-blue-600 dark:text-blue-400">{selectedProduct.location}</p>
               </div>
             </div>
 
+            <button
+              onClick={() => alert(`ส่งข้อความหาผู้ขาย (${selectedProduct.seller}) เรียบร้อยแล้ว`)}
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-2xl shadow-lg transition"
+            >
+              💬 ทักแชทนัดรับสินค้า
+            </button>
           </div>
         </div>
       )}
