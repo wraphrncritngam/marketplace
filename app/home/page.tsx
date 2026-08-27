@@ -24,7 +24,7 @@ const mockProducts: Product[] = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 pb-20">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 pb-24">
       {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl dark:bg-blue-600/15" />
@@ -32,7 +32,7 @@ export default function HomePage() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800/80 px-6 py-4 flex justify-between items-center transition-all">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800/80 px-6 py-4 flex justify-between items-center transition-all">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black text-sm shadow-md shadow-blue-500/20">
             C
@@ -56,7 +56,34 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="p-4 max-w-lg mx-auto">
-        <div className="my-6 space-y-1">
+        {/* Search Bar & Category Filter */}
+        <div className="my-4 space-y-3">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="ค้นหาสินค้า, วิชา, หอพัก..."
+              className="w-full px-4 py-2.5 pl-10 text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm"
+            />
+            <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm">🔍</span>
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
+            {['ทั้งหมด', 'หนังสือ', 'ไอที', 'เสื้อผ้า', 'เครื่องใช้ไฟฟ้า'].map((cat, i) => (
+              <button
+                key={cat}
+                className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition-all ${
+                  i === 0
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300/60'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6 space-y-1">
           <span className="text-xs font-semibold tracking-wider text-blue-600 dark:text-blue-400 uppercase">
             EXPLORE ITEMS
           </span>
@@ -122,6 +149,24 @@ export default function HomePage() {
           ))}
         </div>
       </main>
+
+      {/* Experimental Floating Dock Navigation */}
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-6 px-6 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-slate-200/80 dark:border-slate-800/80 rounded-full shadow-2xl shadow-blue-500/10">
+          <Link href="/home" className="text-xl hover:scale-125 transition-transform" title="หน้าแรก">
+            🏠
+          </Link>
+          <Link href="/product" className="text-xl hover:scale-125 transition-transform" title="ลงขาย">
+            ➕
+          </Link>
+          <button className="text-xl hover:scale-125 transition-transform" title="รายการโปรด">
+            🔖
+          </button>
+          <button className="text-xl hover:scale-125 transition-transform" title="โปรไฟล์">
+            👤
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
