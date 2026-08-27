@@ -1,6 +1,21 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Float } from '@react-three/drei';
+
+// คอมโพเนนต์แสดงผลโมเดล 3D (จำลองเป็นกล่องพัสดุ/สินค้า 3 มิติ)
+function Product3DModel() {
+  return (
+    <Float speed={2} rotationIntensity={1.5} floatIntensity={0.8}>
+      <mesh>
+        <boxGeometry args={[1.6, 1.6, 1.6]} />
+        <meshStandardMaterial color="#4f46e5" roughness={0.3} metalness={0.6} />
+      </mesh>
+    </Float>
+  );
+}
 
 const sampleProducts = [
   {
@@ -11,6 +26,7 @@ const sampleProducts = [
     seller: 'พี่นก (วิศวะ ปี 3)',
     location: 'ตึกวิศวะ',
     image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
+    description: 'หนังสือแคลคูลัส 2 สภาพ 95% ไม่มีรอยไฮไลท์ มีสรุปสูตรแถมให้ในเล่ม นัดรับได้ทันที',
     isHot: true,
   },
   {
@@ -21,6 +37,8 @@ const sampleProducts = [
     seller: 'ฟ้า สดใส',
     location: 'ตึกวิทยาศาสตร์',
     image: 'https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=400',
+    description: 'เสื้อกาวน์เนื้อผ้าใส่สบาย ไม่ร้อน ซักอบเรียบร้อยแล้ว พร้อมใช้งานครับ',
+    isHot: false,
   },
   {
     id: 3,
@@ -30,6 +48,8 @@ const sampleProducts = [
     seller: 'ก๊อฟ วิศวะ',
     location: 'หอพักใน',
     image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400',
+    description: 'เสียงคลิกเงียบมาก ไม่รบกวนคนอื่นเวลาทำงานในห้องหนังสือ แถมถ่านให้ด้วย',
+    isHot: false,
   },
   {
     id: 4,
@@ -39,6 +59,8 @@ const sampleProducts = [
     seller: 'ไมค์ หอ 8',
     location: 'โรงอาหารกลาง',
     image: 'https://images.unsplash.com/photo-1618941723628-98444a8a5f6e?w=400',
+    description: 'พัดลมปรับระดับได้ 3 ระดับ ชาร์จผ่าน USB ปรับก้มเงยได้ ทำงานเงียบ',
+    isHot: false,
   },
   {
     id: 5,
@@ -48,17 +70,25 @@ const sampleProducts = [
     seller: 'บอล สปอร์ต',
     location: 'โรงกิมเนเซียม',
     image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=400',
+    description: 'เอ็นยังตึงพร้อมใช้งาน แถมซองใส่ไม้แบดให้ด้วย นัดรับที่โรงกิมได้เลย',
+    isHot: false,
   },
 ];
 
 export default function HomePage() {
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
   return (
     <div className="p-4 space-y-4">
-      {/* Banner + ปุ่มประกาศขาย */}
-      <div className="flex justify-between items-center bg-blue-50 dark:bg-slate-900 p-4 rounded-2xl border border-blue-100 dark:border-slate-800">
-        <div>
-          <h2 className="font-bold text-base text-blue-900 dark:text-blue-400">มีของไม่ได้ใช้ไหม?</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">ลงขายให้เพื่อนร่วมวิทยาลัยได้ฟรี</p>
+      {/* Banner */}
+      <div className="flex justify-between items-center bg-blue-50 dark:bg-slate-900 p-4 rounded-2xl border-none">
+        <div className="pr-2">
+          <h2 className="font-bold text-base text-blue-900 dark:text-blue-400">
+            มีของไม่ได้ใช้ไหม?
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            ลงขายให้เพื่อนร่วมวิทยาลัยได้ฟรี
+          </p>
         </div>
         <Link
           href="/product"
@@ -68,18 +98,18 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Header หัวข้อ */}
       <div className="flex justify-between items-center pt-2">
         <h3 className="font-extrabold text-base">สินค้ามาใหม่ 🔥</h3>
-        <span className="text-xs text-slate-500">5 รายการ</span>
+        <span className="text-xs text-slate-500">{sampleProducts.length} รายการ</span>
       </div>
 
-      {/* Product List (Mobile Grid) */}
+      {/* Product List */}
       <div className="grid grid-cols-2 gap-3">
         {sampleProducts.map((item) => (
           <div
             key={item.id}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 shadow-sm hover:border-blue-500 transition"
+            onClick={() => setSelectedProduct(item)}
+            className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 shadow-sm hover:border-blue-500 transition"
           >
             <div className="relative w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
               <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
@@ -104,6 +134,68 @@ export default function HomePage() {
           </div>
         ))}
       </div>
+
+      {/* Pop-up รายละเอียดสินค้า + โมเดล 3D */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
+            
+            {/* ปุ่มปิด */}
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center font-bold hover:bg-slate-200 transition"
+            >
+              ✕
+            </button>
+
+            {/* แสดงผล โมเดล 3D แบบหมุนได้ */}
+            <div className="relative w-full h-48 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900 to-indigo-950 border border-slate-800">
+              <span className="absolute top-2 left-3 z-10 text-[10px] bg-blue-500/80 text-white px-2 py-0.5 rounded-full backdrop-blur">
+                ✨ 3D Interactive (ลากเพื่อหมุนดูได้)
+              </span>
+              <Canvas camera={{ position: [0, 0, 3.5] }}>
+                <ambientLight intensity={0.8} />
+                <directionalLight position={[5, 5, 5]} intensity={1.5} />
+                <Product3DModel />
+                <OrbitControls enableZoom={false} />
+              </Canvas>
+            </div>
+
+            {/* รายละเอียดสินค้า */}
+            <div>
+              <span className="text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full font-semibold">
+                {selectedProduct.category}
+              </span>
+              <h2 className="text-lg font-extrabold mt-2">{selectedProduct.title}</h2>
+              <p className="text-2xl font-black text-blue-600 dark:text-cyan-400 mt-1">
+                ฿{selectedProduct.price}
+              </p>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-[#1e293b] p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+              {selectedProduct.description}
+            </div>
+
+            <div className="bg-slate-50 dark:bg-[#1e293b] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-slate-400">ผู้ขาย</p>
+                <p className="font-bold">{selectedProduct.seller}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] text-slate-400">นัดรับที่</p>
+                <p className="font-bold text-blue-600 dark:text-blue-400">{selectedProduct.location}</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => alert(`ส่งข้อความหาผู้ขาย (${selectedProduct.seller}) เรียบร้อยแล้ว`)}
+              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-500/30 hover:opacity-95 transition"
+            >
+              💬 ทักแชทนัดรับสินค้า
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
