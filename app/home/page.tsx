@@ -52,14 +52,14 @@ const sampleProducts = [
   },
   {
     id: 4,
-    title: 'พัดลมตั้งโต๊ะ USB ตัวเล็ก',
+    title: 'กระเป๋า',
     price: 120,
-    category: 'เครื่องใช้ไฟฟ้า',
+    category: 'อุปกรณ์ใส่ของ',
     seller: 'ไมค์ หอ 8',
-    location: 'โรงอาหารกลาง',
+    location: 'ทำงาน',
     // เปลี่ยนมาใช้ URL รูปนี้ครับ
     image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400',
-    description: 'พัดลมปรับระดับได้ 3 ระดับ ชาร์จผ่าน USB ปรับก้มเงยได้ ทำงานเงียบ',
+    description: 'กระเป๋าใส่ของ สะดวกสบาย',
     isHot: false,
   },
   {
