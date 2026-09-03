@@ -57,7 +57,8 @@ const sampleProducts = [
     category: 'เครื่องใช้ไฟฟ้า',
     seller: 'ไมค์ หอ 8',
     location: 'โรงอาหารกลาง',
-    image: 'https://images.unsplash.com/photo-1618941723628-98444a8a5f6e?w=400',
+    // เปลี่ยน URL รูปพัดลมตรงนี้ครับ
+    image: 'https://images.unsplash.com/photo-1565151443833-29bf2df5dd8d?w=400',
     description: 'พัดลมปรับระดับได้ 3 ระดับ ชาร์จผ่าน USB ปรับก้มเงยได้ ทำงานเงียบ',
     isHot: false,
   },
