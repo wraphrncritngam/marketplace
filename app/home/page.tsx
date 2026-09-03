@@ -112,6 +112,13 @@ export default function HomePage() {
   const [cart, setCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // เพิ่ม State คูปอง และ ประวัติการสั่งซื้อ
+  const [couponCode, setCouponCode] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [couponMsg, setCouponMsg] = useState('');
+  const [history, setHistory] = useState<any[]>([]);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
   const addToCart = (product: any, e: React.MouseEvent) => {
     e.stopPropagation();
     setCart((prev) => {
@@ -129,8 +136,41 @@ export default function HomePage() {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // ตรวจสอบคูปองส่วนลด (รองรับโค้ด RAINBOW50 และ CAMPUS100)
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase() === 'RAINBOW50') {
+      setDiscount(50);
+      setCouponMsg('✅ ใช้ส่วนลด ฿50 สำเร็จ!');
+    } else if (couponCode.toUpperCase() === 'CAMPUS100') {
+      setDiscount(100);
+      setCouponMsg('✅ ใช้ส่วนลด ฿100 สำเร็จ!');
+    } else {
+      setDiscount(0);
+      setCouponMsg('❌ โค้ดส่วนลดไม่ถูกต้อง (ลอง RAINBOW50)');
+    }
+  };
+
+  const rawTotalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const finalPrice = Math.max(0, rawTotalPrice - discount);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // บันทึกคำสั่งซื้อลงประวัติ
+  const handleCheckout = () => {
+    const newOrder = {
+      id: `ORD-${Date.now().toString().slice(-4)}`,
+      date: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+      items: cart,
+      total: finalPrice,
+      discountUsed: discount,
+    };
+    setHistory((prev) => [newOrder, ...prev]);
+    alert('🎉 สั่งซื้อสำเร็จ! บันทึกข้อมูลลงประวัติเรียบร้อยแล้ว');
+    setCart([]);
+    setDiscount(0);
+    setCouponCode('');
+    setCouponMsg('');
+    setIsCartOpen(false);
+  };
 
   return (
     <div className="p-4 md:p-6 space-y-4">
@@ -141,10 +181,16 @@ export default function HomePage() {
             มีของไม่ได้ใช้ไหม?
           </h2>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-            ลงขายให้เพื่อนร่วมวิทยาลัยได้ฟรี
+            ลงขายให้เพื่อนร่วมวิทยาลัยได้ฟรี (โค้ดลด: RAINBOW50)
           </p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="px-3.5 py-2 bg-slate-200/80 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs md:text-sm rounded-xl transition border border-slate-300 dark:border-slate-700"
+          >
+            📜 ประวัติ
+          </button>
           <button
             onClick={() => setIsCartOpen(true)}
             className="relative px-3.5 py-2 bg-slate-200/80 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs md:text-sm rounded-xl transition border border-slate-300 dark:border-slate-700"
@@ -217,7 +263,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Cart Pop-up */}
+      {/* Pop-up ตะกร้าสินค้า + คูปอง */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
           <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-pink-500/30 space-y-4 max-h-[85vh] flex flex-col shadow-2xl">
@@ -264,18 +310,47 @@ export default function HomePage() {
 
             {cart.length > 0 && (
               <div className="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3">
-                <div className="flex justify-between items-center font-bold text-base">
-                  <span>ราคารวมทั้งสิ้น:</span>
-                  <span className="text-xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
-                    ฿{totalPrice}
-                  </span>
+                {/* ช่องกรอกคูปอง */}
+                <div className="space-y-1">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="ใส่โค้ดส่วนลด (เช่น RAINBOW50)"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      className="flex-1 px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition"
+                    >
+                      ใช้คูปอง
+                    </button>
+                  </div>
+                  {couponMsg && <p className="text-[10px] font-semibold">{couponMsg}</p>}
                 </div>
+
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between text-slate-400">
+                    <span>ราคารวม:</span>
+                    <span>฿{rawTotalPrice}</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-green-500 font-bold">
+                      <span>ส่วนลดคูปอง:</span>
+                      <span>-฿{discount}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center font-bold text-base pt-1 border-t border-slate-100 dark:border-slate-800">
+                    <span>ราคาสุทธิ:</span>
+                    <span className="text-xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
+                      ฿{finalPrice}
+                    </span>
+                  </div>
+                </div>
+
                 <button
-                  onClick={() => {
-                    alert('ส่งคำสั่งซื้อและทักแชทหาผู้ขายเรียบร้อยแล้ว!');
-                    setCart([]);
-                    setIsCartOpen(false);
-                  }}
+                  onClick={handleCheckout}
                   className="w-full py-3 bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 hover:opacity-90 text-white font-bold text-sm rounded-2xl shadow-lg transition"
                 >
                   ชำระเงิน / นัดรับสินค้า
@@ -286,7 +361,56 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Product Details Pop-up */}
+      {/* Pop-up ประวัติการซื้อ */}
+      {isHistoryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-purple-500/30 space-y-4 max-h-[85vh] flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h2 className="text-lg font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
+                📜 ประวัติการสั่งซื้อ
+              </h2>
+              <button
+                onClick={() => setIsHistoryOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center font-bold hover:bg-slate-200 transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-3">
+              {history.length === 0 ? (
+                <p className="text-center text-slate-400 py-8 text-sm">ยังไม่มีประวัติการสั่งซื้อ</p>
+              ) : (
+                history.map((order) => (
+                  <div
+                    key={order.id}
+                    className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2 text-xs"
+                  >
+                    <div className="flex justify-between font-bold border-b border-slate-200 dark:border-slate-700/50 pb-1.5">
+                      <span className="text-purple-500">{order.id}</span>
+                      <span className="text-slate-400">{order.date}</span>
+                    </div>
+                    <div className="space-y-1">
+                      {order.items.map((it: any) => (
+                        <div key={it.id} className="flex justify-between text-slate-300">
+                          <span>{it.title} (x{it.quantity})</span>
+                          <span>฿{it.price * it.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between font-extrabold pt-1 border-t border-slate-200 dark:border-slate-700/50 text-pink-500">
+                      <span>ยอดชำระจริง:</span>
+                      <span>฿{order.total}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pop-up รายละเอียดสินค้า */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
           <div className="relative w-full max-w-sm md:max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-pink-500/30 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
