@@ -57,8 +57,8 @@ const sampleProducts = [
     category: 'เครื่องใช้ไฟฟ้า',
     seller: 'ไมค์ หอ 8',
     location: 'โรงอาหารกลาง',
-    // เปลี่ยน URL เป็นลิงก์นี้ครับ
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Desk_fan.jpg/800px-Desk_fan.jpg',
+    // ใช้ SVG Data URI โหลดได้ชัวร์ 100% ไม่พึ่งเน็ตภายนอก
+    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="background:%23eff6ff;"><path d="M12 12e-1"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 12l2.5 -4.5"/><path d="M12 12l-5 1"/><path d="M12 12l2.5 4.5"/><path d="M12 21v2"/><path d="M8 23h8"/></svg>',
     description: 'พัดลมปรับระดับได้ 3 ระดับ ชาร์จผ่าน USB ปรับก้มเงยได้ ทำงานเงียบ',
     isHot: false,
   },
