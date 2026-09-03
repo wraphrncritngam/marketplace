@@ -52,14 +52,13 @@ const sampleProducts = [
   },
   {
     id: 4,
-    title: 'กระเป๋า',
+    title: 'กระเป๋าผ้าแคนวาส',
     price: 120,
     category: 'อุปกรณ์ใส่ของ',
     seller: 'ไมค์ หอ 8',
-    location: 'ทำงาน',
-    // เปลี่ยนมาใช้ URL รูปนี้ครับ
+    location: 'ทํางาน',
     image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400',
-    description: 'กระเป๋าใส่ของ สะดวกสบาย',
+    description: 'กระเป๋าผ้าความจุเยอะ ใส่ชีทเรียนและโน้ตบุ๊กได้สบาย ทนทาน ซักสะอาดแล้ว',
     isHot: false,
   },
   {
@@ -110,10 +109,35 @@ const sampleProducts = [
 
 export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [cart, setCart] = useState<any[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // เพิ่มสินค้าลงตะกร้า
+  const addToCart = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  // ลบสินค้าจากตะกร้า
+  const removeFromCart = (id: number) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // ราคารวมทั้งหมด
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="p-4 md:p-6 space-y-4">
-      {/* Banner */}
+      {/* Banner & ปุ่มเปิดตะกร้า */}
       <div className="flex justify-between items-center bg-blue-50 dark:bg-slate-900 p-4 md:p-5 rounded-2xl border-none shadow-sm">
         <div className="pr-2">
           <h2 className="font-bold text-base md:text-lg text-blue-900 dark:text-blue-400">
@@ -123,12 +147,25 @@ export default function HomePage() {
             ลงขายให้เพื่อนร่วมวิทยาลัยได้ฟรี
           </p>
         </div>
-        <Link
-          href="/product"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition whitespace-nowrap"
-        >
-          + ลงขายสินค้า
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative px-3 py-2 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs md:text-sm rounded-xl transition hover:bg-slate-300 dark:hover:bg-slate-700"
+          >
+            🛒 ตะกร้า
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          <Link
+            href="/product"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition whitespace-nowrap"
+          >
+            + ลงขายสินค้า
+          </Link>
+        </div>
       </div>
 
       <div className="flex justify-between items-center pt-2">
@@ -144,31 +181,109 @@ export default function HomePage() {
             onClick={() => setSelectedProduct(item)}
             className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 shadow-sm hover:border-blue-500 hover:shadow-md transition"
           >
-            <div className="relative w-full h-32 md:h-40 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-              <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-              {item.isHot && (
-                <span className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  HOT
+            <div>
+              <div className="relative w-full h-32 md:h-40 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+                <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                {item.isHot && (
+                  <span className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                    HOT
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-2 space-y-1">
+                <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">
+                  {item.category}
                 </span>
-              )}
+                <h4 className="text-xs md:text-sm font-bold line-clamp-1">{item.title}</h4>
+                <p className="text-sm md:text-base font-black text-blue-600 dark:text-cyan-400">
+                  ฿{item.price}
+                </p>
+              </div>
             </div>
 
-            <div className="mt-2 space-y-1">
-              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">
-                {item.category}
-              </span>
-              <h4 className="text-xs md:text-sm font-bold line-clamp-1">{item.title}</h4>
-              <p className="text-sm md:text-base font-black text-blue-600 dark:text-cyan-400">฿{item.price}</p>
-              <div className="text-[10px] text-slate-400 flex justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
-                <span>{item.seller}</span>
-                <span>{item.location}</span>
+            <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <div className="text-[10px] text-slate-400">
+                <p>{item.seller}</p>
+                <p>{item.location}</p>
               </div>
+              <button
+                onClick={(e) => addToCart(item, e)}
+                className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition"
+              >
+                + ตะกร้า
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Pop-up 3D */}
+      {/* Pop-up ตะกร้าสินค้า */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 max-h-[85vh] flex flex-col">
+            <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h2 className="text-lg font-bold">🛒 ตะกร้าสินค้าของคุณ</h2>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center font-bold hover:bg-slate-200 transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-3">
+              {cart.length === 0 ? (
+                <p className="text-center text-slate-400 py-8 text-sm">ไม่มีสินค้าในตะกร้า</p>
+              ) : (
+                cart.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img src={item.image} className="w-12 h-12 rounded-lg object-cover" />
+                      <div>
+                        <h4 className="text-xs font-bold">{item.title}</h4>
+                        <p className="text-xs text-blue-600 dark:text-cyan-400 font-bold">
+                          ฿{item.price} x {item.quantity}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-red-500 text-xs font-bold px-2 py-1 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg transition"
+                    >
+                      ลบ
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3">
+                <div className="flex justify-between items-center font-bold text-base">
+                  <span>ราคารวมทั้งสิ้น:</span>
+                  <span className="text-blue-600 dark:text-cyan-400">฿{totalPrice}</span>
+                </div>
+                <button
+                  onClick={() => {
+                    alert('ส่งคำสั่งซื้อและทักแชทหาผู้ขายเรียบร้อยแล้ว!');
+                    setCart([]);
+                    setIsCartOpen(false);
+                  }}
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-lg transition"
+                >
+                  ชำระเงิน / นัดรับสินค้า
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Pop-up รายละเอียดสินค้า */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="relative w-full max-w-sm md:max-w-md bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-200 dark:border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -217,10 +332,13 @@ export default function HomePage() {
             </div>
 
             <button
-              onClick={() => alert(`ส่งข้อความหาผู้ขาย (${selectedProduct.seller}) เรียบร้อยแล้ว`)}
+              onClick={(e) => {
+                addToCart(selectedProduct, e);
+                setSelectedProduct(null);
+              }}
               className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-2xl shadow-lg transition"
             >
-              💬 ทักแชทนัดรับสินค้า
+              🛒 ใส่ตะกร้าสินค้า
             </button>
           </div>
         </div>
@@ -228,3 +346,4 @@ export default function HomePage() {
     </div>
   );
 }
+     
